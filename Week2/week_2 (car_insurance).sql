@@ -36,16 +36,11 @@ insert into owns values('A03','KA031181');
 insert into owns values('A04','KA095477');
 insert into owns values('A05','KA041702');
 
-create table participated
-(
-	driver_id varchar(10),
-    reg_num varchar(10),
-    report_num int,
-    damage_amount int,
-    primary key(driver_id,reg_num,report_num),
-    foreign key(driver_id) references person(driver_id),
-    foreign key(reg_num) references car(reg_num),
-    foreign key(report_num) references accident(report_num)
+create table participated(driver_id varchar(10),reg_num varchar(10),report_num int,damage_amount int,
+primary key(driver_id,reg_num,report_num),
+foreign key(driver_id) references person(driver_id),
+foreign key(reg_num) references car(reg_num),
+foreign key(report_num) references accident(report_num)
 );
 insert into participated values('A01','KA052250',11,10000);
 insert into participated values('A02','KA053408',12,50000);
