@@ -1,0 +1,100 @@
+create database employee_database;
+use employee_database;
+
+CREATE TABLE DEPT (
+    DEPTNO INT PRIMARY KEY,
+    DNAME VARCHAR(30),
+    DLOC VARCHAR(30)
+);
+
+CREATE TABLE EMPLOYEE (
+    EMPNO INT PRIMARY KEY,
+    ENAME VARCHAR(30),
+    MGR_NO INT,
+    HIREDATE DATE,
+    SAL DECIMAL(10,2),
+    DEPTNO INT,
+    FOREIGN KEY (DEPTNO) REFERENCES DEPT(DEPTNO)
+);
+
+CREATE TABLE PROJECT (
+    PNO INT PRIMARY KEY,
+    PNAME VARCHAR(30),
+    PLOC VARCHAR(30)
+);
+
+CREATE TABLE ASSIGNED_TO (
+    EMPNO INT,
+    PNO INT,
+    JOB_ROLE VARCHAR(30),
+    PRIMARY KEY (EMPNO, PNO),
+    FOREIGN KEY (EMPNO) REFERENCES EMPLOYEE(EMPNO),
+    FOREIGN KEY (PNO) REFERENCES PROJECT(PNO)
+);
+
+CREATE TABLE INCENTIVES (
+    EMPNO INT,
+    INCENTIVE_DATE DATE,
+    INCENTIVE_AMOUNT DECIMAL(10,2),
+    FOREIGN KEY (EMPNO) REFERENCES EMPLOYEE(EMPNO)
+);
+
+INSERT INTO DEPT VALUES
+(10, 'HR', 'Bengaluru'),
+(20, 'Finance', 'Hyderabad'),
+(30, 'IT', 'Mysuru'),
+(40, 'Marketing', 'Chennai'),
+(50, 'Operations', 'Delhi');
+
+INSERT INTO EMPLOYEE VALUES
+(1001, 'Asha',   NULL,  '2020-05-12', 55000, 10),
+(1002, 'Rahul', 1001,   '2021-01-18', 48000, 20),
+(1003, 'Sneha', 1001,   '2019-08-21', 60000, 30),
+(1004, 'Kiran', 1003,   '2022-04-15', 45000, 40),
+(1005, 'Vikram',1002,   '2020-09-12', 52000, 50),
+(1006, 'Neha',  1003,   '2023-03-10', 47000, 30);
+INSERT INTO PROJECT VALUES
+(501, 'ERP Upgrade', 'Bengaluru'),
+(502, 'Payroll Automation', 'Hyderabad'),
+(503, 'AI Chatbot', 'Mysuru'),
+(504, 'Market Survey', 'Delhi'),
+(505, 'Data Migration', 'Chennai');
+INSERT INTO ASSIGNED_TO VALUES
+(1001, 501, 'Manager'),
+(1002, 502, 'Analyst'),
+(1003, 503, 'Developer'),
+(1004, 505, 'Executive'),
+(1005, 504, 'Coordinator'),
+(1006, 503, 'Tester'),
+(1003, 501, 'Consultant');
+INSERT INTO INCENTIVES VALUES
+(1001, '2023-12-10', 5000),
+(1003, '2024-01-20', 7000),
+(1005, '2024-03-15', 6000),
+(1006, '2024-04-25', 3000),
+(1002, '2023-10-05', 4000);
+
+select * from dept;
+select * from employee;
+select * from assigned_to;
+select * from incentives;
+
+SELECT DISTINCT A.EMPNO
+FROM ASSIGNED_TO A
+JOIN PROJECT P ON A.PNO = P.PNO
+WHERE P.PLOC IN ('Bengaluru', 'Hyderabad', 'Mysuru');
+
+SELECT EMPNO
+FROM EMPLOYEE
+WHERE EMPNO NOT IN (SELECT EMPNO FROM INCENTIVES);
+
+SELECT
+    E.ENAME,
+    E.EMPNO,
+    D.DLOC AS DEPT_LOCATION,
+    P.PLOC AS PROJECT_LOCATION
+FROM EMPLOYEE E
+JOIN DEPT D ON E.DEPTNO = D.DEPTNO
+JOIN ASSIGNED_TO A ON E.EMPNO = A.EMPNO
+JOIN PROJECT P ON A.PNO = P.PNO
+WHERE D.DLOC = P.PLOC;
